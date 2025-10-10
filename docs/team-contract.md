@@ -291,3 +291,5 @@ This contract can be amended with:
 ## Signatures
 
 By signing below, we agree to uphold this contract and work together professionally and respectfully.
+
+Giorgi Gogichashvili agreed on 10/10/2025
