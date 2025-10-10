@@ -1,8 +1,8 @@
 # Team Contract
 
 **Course:** Building AI-Powered Applications  
-**Team Name:** Prompstitutes
-**Project:** [Your Project Title]
+**Team Name:** Prompstitutes <br>
+**Project:** `_`<br>
 **Date:** 10/10/2025
 
 ---
@@ -25,9 +25,9 @@ Our team thrives for creating tools and apps which make everyday life easier. To
 
 **Our Goals for This Semester:**
 
-1. [Specific, measurable goal 1]
-2. [Specific, measurable goal 2]
-3. [Specific, measurable goal 3]
+1. Develop a functional prototype of our AI-powered app with a working backend and frontend integration.
+2. Implement at least one core AI feature (e.g., text generation, recommendation, or automation) and test its performance.
+3. Collect user feedback and refine the app’s usability, accuracy, and overall performance before final presentation.
 
 ---
 
@@ -37,13 +37,14 @@ Our team thrives for creating tools and apps which make everyday life easier. To
 
 **Nikoloz Tukhashvili - Backend Lead**
 
-- Responsibilities:
-    - Ensuring all API endpoints and integrations function efficiently and securely
-    - Designing and maintaining scalable backend architecture for AI-driven features
-    - Implementing authentication, rate limiting, and performance optimizations
-    - Collaborating with frontend and ML teams to integrate AI responses and data flow
+-   Responsibilities:
 
-- Accountable for: Overall backend stability, performance, and AI feature reliability
+    -   Ensuring all API endpoints and integrations function efficiently and securely
+    -   Designing and maintaining scalable backend architecture for AI-driven features
+    -   Implementing authentication, rate limiting, and performance optimizations
+    -   Collaborating with frontend and ML teams to integrate AI responses and data flow
+
+-   Accountable for: Overall backend stability, performance, and AI feature reliability
 
 **Anri Javakhishvili - AI Integration**
 
@@ -85,7 +86,7 @@ All team members are equally responsible for:
 
 ### Primary Communication Channel
 
-**Platform:** Discord
+**Platform:** Discord<br>
 **Expected Response Time:** Within 4 hours
 
 ### Meetings
@@ -110,8 +111,8 @@ All team members are equally responsible for:
 
 **Code Review Process:**
 
--   [ ] All PRs require at least [1/2] approval(s)
--   [ ] PRs should be reviewed within [24/48] hours
+-   [ ] All PRs require at least 1 approval
+-   [ ] PRs should be reviewed within 24 hours
 -   [ ] Include tests with new features
 -   [ ] Update documentation for significant changes
 
