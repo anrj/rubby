@@ -284,8 +284,7 @@ This contract can be amended with:
 - [ ] Updated version committed to repo with new date
 
 **Amendment History:**  
-- [Date]: [Brief description of change]
-
+_
 ---
 
 ## Signatures
@@ -294,5 +293,5 @@ By signing below, we agree to uphold this contract and work together professiona
 
 Giorgi Gogichashvili agreed on 10/10/2025  
 Nikoloz Tukhashvili agreed on 10/10/2025  
-Anri Javakhishvili agreed on 10/10/2025
+Anri Javakhishvili agreed on 10/10/2025  
 Davit Kutateladze agreed on 10/10/2025
