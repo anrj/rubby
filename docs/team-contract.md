@@ -1,8 +1,8 @@
 # Team Contract
 
 **Course:** Building AI-Powered Applications  
-**Team Name:** Prompstitutes <br>
-**Project:** `_`<br>
+**Team Name:** Prompstitutes   
+**Project:** `_`  
 **Date:** 10/10/2025
 
 ---
@@ -86,7 +86,7 @@ All team members are equally responsible for:
 
 ### Primary Communication Channel
 
-**Platform:** Discord<br>
+**Platform:** Discord  
 **Expected Response Time:** Within 4 hours
 
 ### Meetings
@@ -292,7 +292,7 @@ This contract can be amended with:
 
 By signing below, we agree to uphold this contract and work together professionally and respectfully.
 
-Giorgi Gogichashvili agreed on 10/10/2025
-Nikoloz Tukhashvili agreen on 10/10/2025
+Giorgi Gogichashvili agreed on 10/10/2025  
+Nikoloz Tukhashvili agreed on 10/10/2025  
 Anri Javakhishvili agreed on 10/10/2025
 Davit Kutateladze agreed on 10/10/2025
