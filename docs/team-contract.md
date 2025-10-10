@@ -294,3 +294,4 @@ By signing below, we agree to uphold this contract and work together professiona
 
 Giorgi Gogichashvili agreed on 10/10/2025
 Nikoloz Tukhashvili agreen on 10/10/2025
+Anri Javakhishvili agreed on 10/10/2025
