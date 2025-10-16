@@ -15,6 +15,7 @@ The system adapts to your thinking in real-time, helping you articulate your rea
 - Adaptive dialogue tailored to your learning process
 - Real-time guidance that helps you find your own insights
 - Supportive interface that makes learning engaging
+- Cute and fun companion by your side 🦆
 
 ## Goal
 
