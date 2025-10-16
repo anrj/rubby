@@ -2,7 +2,7 @@
 
 **Course:** Building AI-Powered Applications  
 **Team Name:** Prompstitutes   
-**Project:** `_`  
+**Project:** Rubby.AI 
 **Date:** 10/10/2025
 
 ---
