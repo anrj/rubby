@@ -12,7 +12,7 @@
 | Name                 | Email                           | GitHub Username | Primary Role   |
 | -------------------- | ------------------------------- | --------------- | -------------- |
 | Nikoloz Tukhashvili  | tukhashvili.nikoloz@kiu.edu.ge  | @Tuxa4Life      | Backend Lead   |
-| Anri Javakhisvili    | javakhishvili.anri@kiu.edu.ge   | @anrij          | AI Integration |
+| Anri Javakhisvili    | javakhishvili.anri@kiu.edu.ge   | @anrj          | AI Integration |
 | Giorgi Gogichashvili | gogichashvili.giorgi@kiu.edu.ge | @gogicho        | UI/UX Designer |
 | Davit Kutateladze    | kutateladze.davit@kiu.edu.ge    | @QutaInParis    | Visionary      |
 
@@ -47,6 +47,8 @@ Our team thrives for creating tools and apps which make everyday life easier. To
 -   Accountable for: Overall backend stability, performance, and AI feature reliability
 
 **Anri Javakhishvili - AI Integration**
+
+Will be added as we progress with the project
 
 -   Responsibilities:
     -   [Specific responsibility 1]
