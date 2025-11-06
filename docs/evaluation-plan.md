@@ -1,6 +1,6 @@
 # Comprehensive Evaluation Plan (Version 2)
 
-**Project Name:** AI-Powered Receipt Scanner
+**Project Name:** Rubby the Duck
 **Team Members:** [Giorgi Gogichashvili, Anri Javakhishvili, Davit Kutateladze, Nikoloz Tukhashvili]
 **Date:** Week 5, [11/6/2025] 
 **Version:** 2.0
