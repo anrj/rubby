@@ -31,6 +31,11 @@ conversational, and cognitively engaging, it redefines how people use AI for lea
 turning it from a tool that hands out answers into one that cultivates curiosity, reflection,
 and genuine understanding.
 
+Based on informal interviews with our fellowe students, we've confirmed that a majority feel they
+overuse AI for direct answers and desire a tool that guides their thinking instead. Our project revives
+and enhances the "rubber duck" practice by making the “duck” interactive. Our AI companion uses the Socratic 
+method to ask guiding questions, helping users identify logical gaps and build genuine understanding in real-time.
+
 ---
 
 ### Scope
@@ -119,6 +124,10 @@ Professionals and researchers: Might use it as a reflective thinking partner dur
 - **Target:** TTS/STT response latency under 2 seconds, and <$0.15 per session in API costs  
 - **Measurement method:** Logging response times and tracking operational costs  
 
+### Metric #6: STT Accuracy
+- **Target:** Achieve a Word Error Rate (WER) of less than 15% on our "golden set" of test audio clips.
+- **Measurement method:** Running pre-recorded test cases against our STT service.
+
 ---
 
 ### Technical Success Criteria
@@ -131,3 +140,39 @@ Professionals and researchers: Might use it as a reflective thinking partner dur
 ### Technical Architecture
 
 Will added as we progress on
+
+## 4. Week 3-4 Learnings
+
+### Learning #1: The Challenge of Real-Time Voice:
+We learned that building a seamless, low-latency voice pipeline is complex. Initial tests show possible significant delays between STT, LLM, and TTS services, which we will work on to optimize.
+
+### Learning #2: Prompt Engineering is Key:
+We discovered that getting an LLM to consistently ask Socratic questions without ever giving the answer is a non-trivial prompting challenge. Problem is that our prompts may result in the AI "breaking character."
+
+### Learning #3: TTS Voice Choice Matters:
+The choice of TTS voice significantly impacts the user's perception of the "duck's" personality. We thought of several voices and are finilizing the solution for the right balance of friendly and engaging voice without being distracting.
+
+## 6. Technical Decisions Log
+
+|Category        |Decision                       |Justification                |Alternatives Considered|
+|----------------|-------------------------------|-----------------------------|-----------------------|
+|LLM             |Not finalized yet              |                             |                       | 
+|STT/TTS         |OpenAI's integrated APIs       |Using a single provider simplifies API key management, billing, and reduces network overhead between services.          |Management, billing, and reduces network overhead between services.	Deepgram for STT (lower latency but more complex integration), ElevenLabs for TTS (higher quality voices but significantly higher cost).                       |
+|Architecture    |WebSocket-based streaming|Essential for providing a low-latency, real-time conversational feel. A standard HTTP request/response model would feel too slow and clunky.|HTTP Long-Polling (less efficient and more complex to manage state).|
+
+## 7. Risk Assessment
+
+|Risk Category        |Risk Description          |Likelihood                   |Impact                 |Mitigation Strategy    |
+|----------------|-------------------------------|-----------------------------|-----------------------|-----------------------|
+|Technical       |High End-to-End Latency: Users may become frustrated if the duck takes too long to respond.|High |High |We will optimize our pipeline by streaming data between services instead of waiting for each step to complete. We have set a technical success metric of <3s latency.|
+|Product        |The Socratic Method is Annoying: Users might just want the answer and find the constant questioning to be frustrating rather than helpful.       |Medium |High | We will refine the prompt to ensure the duck's tone is encouraging and not condescending. User testing will be critical to validate this core mechanic.|
+|Cost   |	API Costs Exceed Budget: A long conversation or inefficient use of models could quickly drain our project budget.|Medium|Medium	|We will use cost-effective models, caching where possible, and will implement usage limits (e.g., max 15-minute sessions) if costs become an issue.|
+|Team  |Integration Complexity: One team member is responsible for the full voice pipeline, creating a potential bottleneck.|Low|Medium|We are documenting the entire process and will conduct a knowledge-sharing session in Week 5 to ensure at least two members understand the end-to-end flow.|
+
+## 8. Open Questions
+
+What is the most effective way to manage conversation history to provide context without making the LLM prompt too long and expensive?
+
+How should the system handle user silence or ambiguous phrases like "um" or "I don't know"?
+
+What is the best UI/UX to indicate when the duck is "listening" vs. "thinking" vs. "speaking"?
