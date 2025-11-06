@@ -2,7 +2,7 @@
 
 **Project Name:** Rubby the Duck
 **Team Members:** [Giorgi Gogichashvili, Anri Javakhishvili, Davit Kutateladze, Nikoloz Tukhashvili]
-**Date:** Week 5, [11/6/2025] 
+**Date:** Week 6, [11/6/2025] 
 **Version:** 2.0
 
 ---
