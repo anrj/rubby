@@ -1,1 +1,53 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules/
+
+# Bun
+bun.lockb
+
+# Build outputs
+dist/
+dist-ssr/
+target/
+
+# Tauri specific
+/frontend/rubby/src-tauri/target/
+/frontend/rubby/src-tauri/gen/
+
+# env variables
+*.local
 .env
+.env.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.zed/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+
+# Tauri build artifacts
+*.exe
+*.app
+*.dmg
+*.deb
+*.AppImage
