@@ -28,3 +28,6 @@ Thumbs.db
 *.dmg
 *.deb
 *.AppImage
+
+
+client/package-lock.json
