@@ -1,20 +1,12 @@
-console.log("Duck window loaded!");
+import { initializeDuck } from './duck.ts'
 
-window.addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-});
+console.log('Duck window loaded!')
 
-const duck = document.getElementById("duck") as HTMLElement;
+const duck = document.getElementById('duck') as HTMLElement
 
 if (!duck) {
-  console.error("Duck element not found!");
+    console.error('Duck element not found!')
 } else {
-  console.log("Duck element found, setting up simple drag behavior");
-
-  duck.setAttribute("data-tauri-drag-region", "");
-
-  duck.addEventListener("click", () => {
-    console.log("Duck clicked!");
-    // TODO: Open chat interface when clicked
-  });
+    console.log('Duck found, enabling drag + speech recognition')
+    initializeDuck(duck)
 }
