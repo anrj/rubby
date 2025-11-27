@@ -12,13 +12,13 @@
 **Function Calling is NOT being utilized in the current sprint.**
 Due to the architectural pivot to a **Voice-In / Text-Out** latency-focused pipeline (using Cerebras), we have deferred tool usage to Week 8.
 
-- [x] **Status Explanation:** `docs/week6-implementation-status.md` - [Direct link](./docs//week6/implementation-status.md)
+- [x] **Status Explanation:** `docs/week6-implementation-status.md` - [Direct link](./docs/week6/implementation-status.md)
 - [x] **Rationale:** The document above explains why we prioritized inference speed (Cerebras) and Audio processing (Rust) over tool use for this specific milestone.
 
 *(The standard Pydantic/Function definitions section has been removed as it is not applicable to the current architecture.)*
 
 ### Tests & Demo (Adapted)
-- [ ] **Demo Video:** [YouTube/Drive URL] // To be added
+- [x] **Demo Video:** [Video link](https://drive.google.com/file/d/1KwHBV3IxEoU6y9rtYG5SYKwpDAgrMzYW/view)
 - [x] **Demo Scope:** Video demonstrates the **Week 7 Architecture** (Voice capture -> Whisper -> Cerebras -> UI) instead of Function Calling.
 
 ### Documentation & Code Quality
