@@ -1,5 +1,9 @@
 console.log("Duck window loaded!");
 
+window.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+});
+
 const duck = document.getElementById("duck") as HTMLElement;
 
 if (!duck) {
