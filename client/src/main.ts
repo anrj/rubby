@@ -1,27 +1,12 @@
-const duck = document.getElementById('duck')
-if (!duck) throw new Error("Duck couldn't be loaded")
+import { initializeDuck } from './duck.ts'
 
-const recordAudio = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    const mediaRecorder = new MediaRecorder(stream)
-    const chunks: BlobPart[] = []
+console.log('Duck window loaded!')
 
-    mediaRecorder.ondataavailable = (e) => chunks.push(e.data)
-    mediaRecorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: 'audio/wav' })
-        const formData = new FormData()
-        formData.append('file', blob, 'voice.wav')
+const duck = document.getElementById('duck') as HTMLElement
 
-        const res = await fetch('/transcribe', { method: 'POST', body: formData })
-        const data = await res.json()
-        console.log('Transcription:', data.text)
-    }
-
-    mediaRecorder.start()
-
-    setTimeout(() => mediaRecorder.stop(), 5000)
+if (!duck) {
+    console.error('Duck element not found!')
+} else {
+    console.log('Duck found, enabling drag + speech recognition')
+    initializeDuck(duck)
 }
-
-duck.addEventListener('click', (e) => {
-    if (e.ctrlKey) recordAudio()
-})
