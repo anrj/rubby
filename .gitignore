@@ -19,8 +19,8 @@ dist-ssr/
 target/
 
 # Tauri specific
-/frontend/rubby/src-tauri/target/
-/frontend/rubby/src-tauri/gen/
+frontend/src-tauri/target/
+frontend/src-tauri/gen/
 
 # env variables
 *.local
