@@ -16,7 +16,6 @@ body {
   top: 0px;
   cursor: grab;
 
-  /* Point this to your actual duck image */
   background-image: url("./assets/duck_idle1.gif");
   background-size: contain;
   background-repeat: no-repeat;
