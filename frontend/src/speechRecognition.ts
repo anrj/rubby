@@ -3,6 +3,8 @@ export class SpeechRecognitionManager {
     private isRecording: boolean = false
     private transcripts: string[] = []
 
+    private quietCounter: number = 0
+
     constructor () {
         this.initializeRecognition()
     }
@@ -27,9 +29,17 @@ export class SpeechRecognitionManager {
             const text = e.results[0][0].transcript
             this.transcripts.push(text)
             console.log(text)
+
+            if (this.quietCounter !== 0) this.quietCounter = 0
+        }
+
+        this.recognition.onerror = () => {
+            this.quietCounter ++
+            if (this.quietCounter === 1) console.log('=== FETCH LLM ===')
         }
 
         this.recognition.onend = () => {
+            this.quietCounter = 0
             if (this.isRecording) {
                 this.recognition.start()
             }
@@ -53,7 +63,7 @@ export class SpeechRecognitionManager {
             this.recognition.stop()
 
             const fullText = this.transcripts.join(' ')
-            console.log('Final transcript:', fullText)
+            console.log(fullText)
         }
     }
 
