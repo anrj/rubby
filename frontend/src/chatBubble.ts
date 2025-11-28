@@ -2,9 +2,9 @@ import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 
 export const openWin = () => {
     const win = new WebviewWindow('settings', {
-        url: '',
-        width: 100,
-        height: 100,
+        url: '/chat-bubble.html',
+        width: 300,
+        height: 200,
         x: 300,
         y: 300,
         decorations: false,
