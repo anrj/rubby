@@ -1,9 +1,16 @@
 [package]
 name = "ai"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+
+[lib]
+name = "ai"
+path = "src/lib.rs"
 
 [dependencies]
 openai-api-rs = "6.0.11"
 tokio = { version = "1.47.1", features = ["full"] }
 dotenvy = "0.15"
+serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+tauri = { version = "2", features = [] }

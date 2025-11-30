@@ -1,3 +1,5 @@
+import { sendPrompt } from "./AIFunctions.ts"
+
 export class SpeechRecognitionManager {
     private recognition: any = null
     private isRecording: boolean = false
@@ -23,10 +25,16 @@ export class SpeechRecognitionManager {
         this.recognition.continuous = false
 
         this.recognition.onresult = (e: any) => {
-            console.log(e)
             const text = e.results[0][0].transcript
             this.transcripts.push(text)
             console.log(text)
+        }
+
+        this.recognition.onerror = () => {
+            if (this.transcripts.length !== 0) {
+                sendPrompt(this.getFullTranscript())
+                this.transcripts = []
+            }
         }
 
         this.recognition.onend = () => {
