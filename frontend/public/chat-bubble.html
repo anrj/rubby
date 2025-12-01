@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,9 +49,19 @@
         }
     </style>
 </head>
+
 <body>
     <div class="bubble">
         Lorem ipsum dolor sit amet consectetur adipisicing elit.
     </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search)
+        const text = params.get("text") || "…"
+
+        document.querySelector(".bubble").textContent = text
+    </script>
+
 </body>
+
 </html>
