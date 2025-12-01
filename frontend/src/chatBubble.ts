@@ -30,8 +30,6 @@ const openWin = (id: string, url: string, width: number = 300, height: number = 
 }
 
 export const openBubble = async (text: string = '', id: string = 'bubble') => {
-    if (await WebviewWindow.getByLabel(id)) closeBubble(id)
-
     const existingListener = moveListeners.get(id)
     if (existingListener) {
         existingListener()
