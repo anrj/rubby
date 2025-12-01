@@ -1,9 +1,11 @@
 import { sendPrompt } from "./AIFunctions.ts"
+import { closeBubble, openBubble, sleep } from "./chatBubble.ts"
 
 export class SpeechRecognitionManager {
     private recognition: any = null
     private isRecording: boolean = false
     private transcripts: string[] = []
+    private currentBubbleID: string = 'bubble'
 
     constructor () {
         this.initializeRecognition()
@@ -30,9 +32,12 @@ export class SpeechRecognitionManager {
             console.log(text)
         }
 
-        this.recognition.onerror = () => {
+        this.recognition.onerror = async () => {
             if (this.transcripts.length !== 0) {
-                sendPrompt(this.getFullTranscript())
+                await closeBubble(this.currentBubbleID)
+                await sleep(100)
+                await openBubble(await sendPrompt(this.getFullTranscript()), this.currentBubbleID)
+                
                 this.transcripts = []
             }
         }
@@ -44,24 +49,25 @@ export class SpeechRecognitionManager {
         }
     }
 
-    public toggleRecording = (): void => {
+    public toggleRecording = async (): Promise<void> => {
         if (!this.recognition) {
             console.warn('SpeechRecognition not supported')
             return
         }
 
         if (!this.isRecording) {
-            console.log('Recording started (ctrl+click again to stop)')
+            this.currentBubbleID = await openBubble('Listening...', this.currentBubbleID)
+            await sleep(100)
+
             this.transcripts = []
             this.isRecording = true
             this.recognition.start()
         } else {
-            console.log('Recording stopped, finalizing…')
+            await closeBubble(this.currentBubbleID)
+
             this.isRecording = false
             this.recognition.stop()
 
-            const fullText = this.transcripts.join(' ')
-            console.log('Final transcript:', fullText)
         }
     }
 

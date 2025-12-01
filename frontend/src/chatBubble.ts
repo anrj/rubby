@@ -1,9 +1,12 @@
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { PhysicalPosition } from '@tauri-apps/api/dpi'
+import type { UnlistenFn } from '@tauri-apps/api/event'
 
-const openWin = (url: string, width: number = 300, height: number = 200, initX: number = 500, initY: number = 500) => {
-    const win = new WebviewWindow('bubble', {
+const moveListeners = new Map<string, UnlistenFn>()
+
+const openWin = (id: string, url: string, width: number = 300, height: number = 200, initX: number = 500, initY: number = 500) => {
+    const win = new WebviewWindow(id, {
         url,
         width,
         height,
@@ -26,20 +29,49 @@ const openWin = (url: string, width: number = 300, height: number = 200, initX: 
     return win
 }
 
-export const openBubble = async () => {
-    const mainWindow = getCurrentWebviewWindow()
+export const openBubble = async (text: string = '', id: string = 'bubble') => {
+    if (await WebviewWindow.getByLabel(id)) closeBubble(id)
 
-    const win = openWin('/chat-bubble.html')
+    const existingListener = moveListeners.get(id)
+    if (existingListener) {
+        existingListener()
+        moveListeners.delete(id)
+    }
+
+    const encoded = encodeURIComponent(text)
+    const win = openWin(id, `/chat-bubble.html?text=${encoded}`)
+
     await win.once('tauri://created', () => {})
 
+    const mainWindow = getCurrentWebviewWindow()
     const offsetX = 250
     const offsetY = -60
 
     const currentPos = await mainWindow.outerPosition()
     await win.setPosition(new PhysicalPosition(currentPos.x + offsetX, currentPos.y + offsetY))
 
-    mainWindow.listen('tauri://move', async (event) => {
-        const { x, y } = event.payload as { x: number; y: number }
-        await win.setPosition(new PhysicalPosition(x + offsetX, y + offsetY))
+    const unlisten = await mainWindow.listen('tauri://move', async (event) => {
+        const { x, y } = event.payload as {x: number, y: number}
+        const bubbleWin = await WebviewWindow.getByLabel(id)
+        if (bubbleWin) {
+            await bubbleWin.setPosition(new PhysicalPosition(x + offsetX, y + offsetY))
+        }
     })
+    
+    moveListeners.set(id, unlisten)
+
+    return id
 }
+
+export const closeBubble = async (id: string) => {
+    const listener = moveListeners.get(id)
+    if (listener) {
+        listener()
+        moveListeners.delete(id)
+    }
+    
+    const win = await WebviewWindow.getByLabel(id)
+    if (win) await win.close()
+}
+
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

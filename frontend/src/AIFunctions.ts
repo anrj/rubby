@@ -12,8 +12,9 @@ interface ChatResponse {
 export const sendPrompt = async (prompt: string) => {
     try {
         const response = await invoke<ChatResponse>('run_chat_command', { prompt })
-        console.log('🦆:', response.choices[0].message.content)
+        return response.choices[0].message.content
     } catch (err) {
         console.error(err)
+        return 'ERROR SENDING PROMPT'
     }
 }
