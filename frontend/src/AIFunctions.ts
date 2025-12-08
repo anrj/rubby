@@ -1,20 +1,15 @@
 import { invoke } from '@tauri-apps/api/core'
 
-interface ChatResponse {
-    choices: Array<{
-        message: {
-            content: string,
-            role: string
-        }
-    }>
-}
-
-export const sendPrompt = async (prompt: string) => {
+export const sendPrompt = async (prompt: string): Promise<string> => {
+    if (!prompt.trim()) {
+        throw new Error('Prompt cannot be empty')
+    }
+    
     try {
-        const response = await invoke<ChatResponse>('run_chat_command', { prompt })
-        return response.choices[0].message.content
+        const response = await invoke<string>('run_chat_command', { prompt })
+        return response
     } catch (err) {
         console.error(err)
-        return 'ERROR SENDING PROMPT'
+        return 'ERROR SENDING PROMPT OR GETTING RESPONSE'
     }
 }
