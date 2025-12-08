@@ -64,7 +64,7 @@ impl RubbyAI {
             self.messages.clone() 
         );
         
-        req.max_tokens = Some(240); 
+        req.max_tokens = Some(120); 
         req.temperature = Some(0.3);
         req.top_p = Some(0.9);
 
