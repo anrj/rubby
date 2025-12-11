@@ -7,7 +7,7 @@ use std::error::Error;
 
 const MODEL_ID: &str = "qwen-3-235b-a22b-instruct-2507";
 const API_ENDPOINT: &str = "https://api.cerebras.ai/v1";
-const SYSTEM_PROMPT: &str = include_str!("qwen_prompt.txt");
+const SYSTEM_PROMPT: &str = include_str!("system_prompt.txt");
 const MAX_HISTORY: usize = 21; 
 
 pub struct RubbyAI {
@@ -64,7 +64,7 @@ impl RubbyAI {
             self.messages.clone() 
         );
         
-        req.max_tokens = Some(120); 
+        req.max_tokens = Some(67); 
         req.temperature = Some(0.3);
         req.top_p = Some(0.9);
 
