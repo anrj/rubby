@@ -21,8 +21,8 @@ const openWin = (id: string, url: string, width: number = 300, height: number = 
         skipTaskbar: true,
     })
 
-    win.once('tauri://error', (e) => {
-        console.error(e)
+    win.once('tauri://error', () => {
+        console.log('=== Problem generating bubble -> chatBubble.ts ===')
         return
     })
 
