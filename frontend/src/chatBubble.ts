@@ -46,7 +46,14 @@ const throttledPositionUpdate = () => {
     animationFrameId = requestAnimationFrame(async () => {
       for (const [id, duckPos] of positionUpdateQueue.entries()) {
         try {
-          const bubbleWin = windowCache.get(id);
+          let bubbleWin = windowCache.get(id);
+          if (!bubbleWin) {
+              const found = await WebviewWindow.getByLabel(id)
+              if (found) {
+                  bubbleWin = found
+                  windowCache.set(id, found)
+              }
+          }
           const offsets = activeBubbleOffsets.get(id);
 
           if (bubbleWin && offsets) {
