@@ -5,61 +5,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Bubble</title>
+    
     <style>
+        @font-face {
+            font-family: 'PixelFont';
+            src: url('./fonts/pixelfont.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
 
         body {
             background: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 10px;
+            font-family: 'PixelFont', monospace;
+            padding: 20px;
             display: flex;
             align-items: center;
-            justify-content: left;
+            justify-content: flex-start;
             height: 100vh;
             overflow: hidden;
         }
 
-        .bubble {
-            background: white;
-            color: black;
-            padding: 16px 20px;
-            border-radius: 18px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-            position: relative;
-            max-width: 280px;
-            font-size: 14px;
-            line-height: 1.5;
+        .bubble-container {
+            display: grid;
+            /* 4 columns: corner | pointer | edge | corner */
+            grid-template-columns: 15px 40px 1fr 15px;
+            grid-template-rows: 15px 1fr 30px;
+            max-width: 400px;
+            min-width: 200px;
         }
 
-        .bubble::after {
-            content: '';
-            position: absolute;
-            bottom: 10px;
-            left: -8px;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 0 15px 15px 0;
-            border-color: transparent white transparent transparent;
-            filter: drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.1));
+        /* Row 1: Top */
+        .corner-tl {
+            grid-area: 1 / 1;
+            background: url('./chatbubble/cortner_tl.png') no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .edge-top {
+            grid-area: 1 / 2 / 1 / 4;  /* Spans columns 2 and 3 */
+            background: url('./chatbubble/edge_t.png') repeat-x;
+            background-size: auto 100%;
+        }
+
+        .corner-tr {
+            grid-area: 1 / 4;
+            background: url('./chatbubble/corner_tr.png') no-repeat;
+            background-size: 100% 100%;
+        }
+
+        /* Row 2: Middle */
+        .edge-left {
+            grid-area: 2 / 1;
+            background: url('./chatbubble/edge_l.png') repeat-y;
+            background-size: 100% auto;
+        }
+
+        .center {
+            grid-area: 2 / 2 / 2 / 4;  /* Spans columns 2 and 3 */
+            background: white;
+            padding: 10px 15px;
+            color: black;
+            font-size: 20px;
+            line-height: 1.1;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .edge-right {
+            grid-area: 2 / 4;
+            background: url('./chatbubble/edge_r.png') repeat-y;
+            background-size: 100% auto;
+        }
+
+        /* Row 3: Bottom */
+        .corner-bl {
+            grid-area: 3 / 1;
+            background: url('./chatbubble/corner_bl.png') no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .pointer {
+            grid-area: 3 / 2;
+            background: url('./chatbubble/pointer.png') no-repeat;
+            background-size: 100% 100%; /* Force it to fill the 40px width */
+        }
+
+        .edge-bottom {
+            grid-area: 3 / 3;
+            background: url('./chatbubble/edge_b.png') repeat-x;
+            background-size: auto 100%;
+        }
+
+        .corner-br {
+            grid-area: 3 / 4;
+            background: url('./chatbubble/corner_br.png') no-repeat;
+            background-size: 100% 100%;
         }
     </style>
 </head>
 
 <body>
-    <div class="bubble">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    <div class="bubble-container">
+        <!-- Row 1: Top -->
+        <div class="corner-tl"></div>
+        <div class="edge-top"></div>
+        <div class="corner-tr"></div>
+        
+        <!-- Row 2: Middle -->
+        <div class="edge-left"></div>
+        <div class="center" id="text"></div>
+        <div class="edge-right"></div>
+        
+        <!-- Row 3: Bottom -->
+        <div class="corner-bl"></div>
+        <div class="pointer"></div>
+        <div class="edge-bottom"></div>
+        <div class="corner-br"></div>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search)
         const text = params.get("text") || "…"
-
-        document.querySelector(".bubble").textContent = text
+        document.getElementById("text").textContent = text
     </script>
 
 </body>

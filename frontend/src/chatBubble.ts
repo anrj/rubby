@@ -17,7 +17,7 @@ const openWin = (id: string, url: string, width: number = 300, height: number = 
         alwaysOnTop: true,
         resizable: false,
         hiddenTitle: true,
-        shadow: false,
+        shadow: true,
         skipTaskbar: true,
     })
 

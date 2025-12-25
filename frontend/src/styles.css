@@ -16,7 +16,7 @@ body {
     top: 0px;
     cursor: grab;
 
-    background-image: url('./assets/duck_idle1.gif');
+    background-image: url('./assets/duck-idle.webp');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
