@@ -25,3 +25,7 @@ body {
 #duck:active {
     cursor: grabbing;
 }
+
+/*#duck.listening {
+    background-image: url('./assets/duck-listen.webp');
+}*/
