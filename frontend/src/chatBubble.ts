@@ -38,39 +38,60 @@ const openWin = (
   });
 };
 
-let positionUpdateQueue = new Map<string, { x: number; y: number }>();
-let animationFrameId: number | null = null;
+const pendingBubbleUpdates = new Map<
+  string,
+  {
+    position: { x: number; y: number };
+    timeoutId: number | null;
+  }
+>();
 
-const throttledPositionUpdate = () => {
-  if (animationFrameId === null) {
-    animationFrameId = requestAnimationFrame(async () => {
-      for (const [id, duckPos] of positionUpdateQueue.entries()) {
-        try {
-          let bubbleWin = windowCache.get(id);
-          if (!bubbleWin) {
-              const found = await WebviewWindow.getByLabel(id)
-              if (found) {
-                  bubbleWin = found
-                  windowCache.set(id, found)
-              }
+const THROTTLE_MS = 8; // ~120fps
+
+const schedulePositionUpdate = (
+  id: string,
+  position: { x: number; y: number },
+) => {
+  const pending = pendingBubbleUpdates.get(id);
+
+  if (pending) {
+    // Update position but keep existing timeout
+    pending.position = position;
+  } else {
+    // Create new entry with timeout
+    const timeoutId = window.setTimeout(async () => {
+      const update = pendingBubbleUpdates.get(id);
+      if (!update) return;
+
+      try {
+        let bubbleWin = windowCache.get(id);
+        if (!bubbleWin) {
+          const found = await WebviewWindow.getByLabel(id);
+          if (found) {
+            bubbleWin = found;
+            windowCache.set(id, found);
           }
-          const offsets = activeBubbleOffsets.get(id);
-
-          if (bubbleWin && offsets) {
-            const size = await bubbleWin.outerSize();
-
-            const targetX = Math.round(duckPos.x + offsets.x);
-            const targetY = Math.round(duckPos.y + offsets.y - size.height);
-
-            await bubbleWin.setPosition(new PhysicalPosition(targetX, targetY));
-          }
-        } catch (e) {
-          console.error("Movement error:", e);
         }
+        const offsets = activeBubbleOffsets.get(id);
+
+        if (bubbleWin && offsets) {
+          const size = await bubbleWin.outerSize();
+
+          const targetX = Math.round(update.position.x + offsets.x);
+          const targetY = Math.round(
+            update.position.y + offsets.y - size.height,
+          );
+
+          await bubbleWin.setPosition(new PhysicalPosition(targetX, targetY));
+        }
+      } catch (e) {
+        console.error("Movement error:", e);
       }
-      positionUpdateQueue.clear();
-      animationFrameId = null;
-    });
+
+      pendingBubbleUpdates.delete(id);
+    }, THROTTLE_MS);
+
+    pendingBubbleUpdates.set(id, { position, timeoutId });
   }
 };
 
@@ -154,8 +175,7 @@ export const openBubble = async (
     "tauri://move",
     async (event) => {
       const { x, y } = event.payload as { x: number; y: number };
-      positionUpdateQueue.set(id, { x, y });
-      throttledPositionUpdate();
+      schedulePositionUpdate(id, { x, y });
     },
   );
   moveListeners.set(id, unlistenMove);
@@ -165,6 +185,13 @@ export const openBubble = async (
 
 export const closeBubble = async (id: string) => {
   activeBubbleOffsets.delete(id);
+
+  // Clear any pending position updates
+  const pending = pendingBubbleUpdates.get(id);
+  if (pending && pending.timeoutId !== null) {
+    clearTimeout(pending.timeoutId);
+    pendingBubbleUpdates.delete(id);
+  }
 
   const moveListener = moveListeners.get(id);
   if (moveListener) {

@@ -18,10 +18,16 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "macOS": {
+      "files": {
+        "../../Info.plist": "Info.plist"
+      }
+    }
   },
   "app": {
     "withGlobalTauri": true,
+    "macOSPrivateApi": true,
     "windows": [
       {
         "label": "main",
@@ -36,7 +42,8 @@
         "center": true,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay",
-        "shadow": false
+        "shadow": false,
+        "acceptFirstMouse": true
       }
     ],
     "security": {
