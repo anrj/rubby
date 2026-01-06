@@ -46,7 +46,11 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .manage(AppState::new())
-        .setup(|_app| Ok(()))
+        .setup(|app| {
+          #[cfg(target_os = "macos")]
+          app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+          Ok(())
+          })
         .invoke_handler(tauri::generate_handler![
             run_chat_command,
             start_window_drag,
