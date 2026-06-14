@@ -179,8 +179,6 @@ export class AudioRecorder {
                 // Store the blob so it can be accessed via the getter
                 this._audioBlob = audioBlob
                 this.setStatus('Recording Complete')
-                // Log the audioBlob when recording is over
-                console.log('Audio Blob:', audioBlob)
                 // Call any queued onSilence callbacks now that audioBlob is ready
                 while (this.onSilenceQueue.length > 0) {
                     const cb = this.onSilenceQueue.shift()

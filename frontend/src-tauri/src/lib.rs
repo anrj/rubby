@@ -1,7 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use ai::RubbyAI;
-use tauri::{State, Window};
+use tauri::State;
 use tokio::sync::Mutex;
 
 mod groq;
@@ -34,11 +34,6 @@ async fn run_chat_command(prompt: String, state: State<'_, AppState>) -> Result<
     }
 }
 
-#[tauri::command]
-fn start_window_drag(window: Window) -> Result<(), String> {
-    window.start_dragging().map_err(|e| e.to_string())
-}
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     dotenvy::dotenv().ok();
@@ -46,14 +41,13 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .manage(AppState::new())
-        .setup(|app| {
+        .setup(|_app| {
           #[cfg(target_os = "macos")]
-          app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+          _app.set_activation_policy(tauri::ActivationPolicy::Accessory);
           Ok(())
           })
         .invoke_handler(tauri::generate_handler![
             run_chat_command,
-            start_window_drag,
             transcribe_audio
         ])
         .run(tauri::generate_context!())

@@ -1,20 +1,45 @@
-use openai_api_rs::v1::{
-    api::OpenAIClient,
-    chat_completion::{ChatCompletionMessage, ChatCompletionRequest, Content, MessageRole},
-};
+use openai_api_rs::v1::chat_completion::{ChatCompletionMessage, Content, MessageRole};
+use serde::Deserialize;
 use std::env;
 use std::error::Error;
 
-const MODEL_ID: &str = "qwen-3-235b-a22b-instruct-2507";
-// const MODEL_ID: &str = "gpt-oss-120b";
-const API_ENDPOINT: &str = "https://api.cerebras.ai/v1";
+const MODEL_ID: &str = "gpt-oss-120b";
+const API_ENDPOINT: &str = "https://api.cerebras.ai/v1/chat/completions";
 const SYSTEM_PROMPT: &str = include_str!("system_prompt.txt");
 
 const MAX_RECENT_MESSAGES: usize = 8;
 const SUMMARIZE_THRESHOLD: usize = 16;
 
+// gpt-oss-120b is a reasoning model. By default it emits chain-of-thought into
+// `content` (which would land in the chat bubble) and those tokens count against
+// the completion budget. We send `reasoning_effort: low` to keep latency/cost
+// down and `reasoning_format: parsed` so reasoning goes to a separate field we
+// ignore, leaving `content` as the clean final answer.
+const REASONING_EFFORT: &str = "low";
+const REASONING_FORMAT: &str = "parsed";
+
+// Headroom for the (now small) reasoning trace plus the short final reply.
+const CHAT_MAX_TOKENS: u32 = 1024;
+const SUMMARY_MAX_TOKENS: u32 = 1024;
+
+#[derive(Deserialize)]
+struct ChatResponse {
+    choices: Vec<Choice>,
+}
+
+#[derive(Deserialize)]
+struct Choice {
+    message: ResponseMessage,
+}
+
+#[derive(Deserialize)]
+struct ResponseMessage {
+    content: Option<String>,
+}
+
 pub struct RubbyAI {
-    client: OpenAIClient,
+    client: reqwest::Client,
+    api_key: String,
     model: String,
     messages: Vec<ChatCompletionMessage>,
     has_summary: bool,
@@ -22,15 +47,10 @@ pub struct RubbyAI {
 
 impl RubbyAI {
     pub fn new() -> Result<Self, Box<dyn Error>> {
-        dotenvy::dotenv().ok(); 
+        dotenvy::dotenv().ok();
 
         let api_key = env::var("CEREBRAS_API_KEY")
             .map_err(|_| "CEREBRAS_API_KEY environment variable not set")?;
-
-        let client = OpenAIClient::builder()
-            .with_endpoint(API_ENDPOINT)
-            .with_api_key(api_key)
-            .build()?;
 
         let messages = vec![ChatCompletionMessage {
             role: MessageRole::system,
@@ -41,11 +61,55 @@ impl RubbyAI {
         }];
 
         Ok(Self {
-            client,
+            client: reqwest::Client::new(),
+            api_key,
             model: MODEL_ID.to_string(),
             messages,
             has_summary: false,
         })
+    }
+
+    /// Raw chat-completions call. We bypass the openai-api-rs request builder
+    /// because it can't set Cerebras's `reasoning_effort` / `reasoning_format`
+    /// fields, which gpt-oss-120b needs to behave. `ChatCompletionMessage`
+    /// still serializes to valid OpenAI-format messages.
+    async fn complete(
+        &self,
+        messages: &[ChatCompletionMessage],
+        max_tokens: u32,
+    ) -> Result<String, Box<dyn Error>> {
+        let body = serde_json::json!({
+            "model": self.model,
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "temperature": 0.3,
+            "top_p": 0.9,
+            "reasoning_effort": REASONING_EFFORT,
+            "reasoning_format": REASONING_FORMAT,
+        });
+
+        let response = self
+            .client
+            .post(API_ENDPOINT)
+            .header("Authorization", format!("Bearer {}", self.api_key))
+            .json(&body)
+            .send()
+            .await?;
+
+        if !response.status().is_success() {
+            let error_text = response.text().await.unwrap_or_default();
+            return Err(format!("Cerebras API error: {}", error_text).into());
+        }
+
+        let parsed: ChatResponse = response.json().await?;
+        let content = parsed
+            .choices
+            .first()
+            .and_then(|c| c.message.content.clone())
+            .filter(|c| !c.is_empty())
+            .ok_or("Model returned empty response")?;
+
+        Ok(content)
     }
 
     pub async fn chat(&mut self, prompt: &str) -> Result<String, Box<dyn Error>> {
@@ -56,27 +120,12 @@ impl RubbyAI {
             tool_calls: None,
             tool_call_id: None,
         });
-        
+
         if self.messages.len() > SUMMARIZE_THRESHOLD + 1 {
             self.summarize().await?;
         }
 
-        let mut req = ChatCompletionRequest::new(
-            self.model.clone(), 
-            self.messages.clone() 
-        );
-        
-        // Model configuration
-        req.max_tokens = Some(67);
-        req.temperature = Some(0.3);
-        req.top_p = Some(0.9);
-        
-        let result = self.client.chat_completion(req).await?;
-
-        let content = result.choices.first()
-            .and_then(|c| c.message.content.as_ref())
-            .ok_or("Model returned empty response")?
-            .to_string();
+        let content = self.complete(&self.messages, CHAT_MAX_TOKENS).await?;
 
         self.messages.push(ChatCompletionMessage {
             role: MessageRole::assistant,
@@ -136,20 +185,10 @@ impl RubbyAI {
             },
         ];
         
-        let mut req = ChatCompletionRequest::new(
-            self.model.clone(),
-            summarization_messages,
-        );
-        
-        req.temperature = Some(0.3);
-        req.top_p = Some(0.9);
-        
-        let result = self.client.chat_completion(req).await?;
-        let summary = result.choices.first()
-            .and_then(|c| c.message.content.as_ref())
-            .ok_or("Failed to generate summary")?
-            .to_string();
-        
+        let summary = self
+            .complete(&summarization_messages, SUMMARY_MAX_TOKENS)
+            .await?;
+
         // Build new message list
         let mut new_messages = vec![self.messages[0].clone()]; // Keep System Prompt
         
